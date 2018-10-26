@@ -1,0 +1,26 @@
+body {
+    padding: 0.5rem;
+}
+
+p {
+    font-size: 0.4rem;
+    margin: 0 0 0.1rem 0;
+}
+
+button {
+    width: 1.6rem;
+    height: 0.4rem;
+    margin-top: 0.1rem;
+    font-size: 0.2rem;
+}
+
+.now {
+    width: 0.4rem;
+    height: 0.35rem;
+    border: 0.01rem #cccccc solid;
+    font-size: 0.28rem;
+}
+
+.now:focus {
+    border: 0.01rem #587d18 solid;
+}
