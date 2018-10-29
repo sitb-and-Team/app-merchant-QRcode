@@ -3,66 +3,52 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css"
+          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
     <link rel="stylesheet" href="css/index.css">
     <script src="js/jquery-3.3.1.js"></script>
-    <script src="js/rem.js"></script>
+    <meta id="viewport" name="viewport"
+          content="width=device-width; initial-scale=1.0; maximum-scale=1; user-scalable=no;">
 </head>
 <body>
-<p>商户代码：</p>
-<div class="center">
-    <input type='text' name='code[]' class='now' maxlength="1"/>
-    <input type='text' name='code[]' class='now' maxlength="1"/>
-    <input type='text' name='code[]' class='now' maxlength="1"/>
-    <input type='text' name='code[]' class='now' maxlength="1"/>
-    <input type='text' name='code[]' class='now' maxlength="1"/>
-    <input type='text' name='code[]' class='now' maxlength="1"/>
-    <input type='text' name='code[]' class='now' maxlength="1"/>
-    <input type='text' name='code[]' class='now' maxlength="1"/>
-    <input type='text' name='code[]' class='now' maxlength="1"/>
-    <input type='text' name='code[]' class='now' maxlength="1"/>
-    <input type='text' name='code[]' class='now' maxlength="1"/>
-    <input type='text' name='code[]' class='now' maxlength="1"/>
-    <input type='text' name='code[]' class='now' maxlength="1"/>
-    <input type='text' name='code[]' class='now' maxlength="1"/>
-    <input type='text' name='code[]' class='now' maxlength="1"/>
+<div class="box">
+    <p id="titi">请输入商户代码</p>
+    <div class="center">
+        <input type='text' name='code[]' class='now' maxlength="15"/>
+    </div>
+    <div class="butt">
+        <button id="butt" type="button" class="btn btn-info">获取收款码</button>
+    </div>
 </div>
-<button id="butt">获取收款码</button>
-<img id="QRcode" style="display: none"/>
 <script type="text/javascript">
     let dm = [];
-    $('.now').on('keyup', function () {
-        // 如果不为空
-        if ($(this).val() != '') {
-            if (dm.length >= 15) {
-                return
-            } else {
-                dm[dm.length] = $(this).val();
-                $(this).next('input').focus();
-            }
-            console.log(dm);
-        }
+    $('input').on('input', function () {
+        this.value = this.value.replace(/\D/gi, "")
     });
-    $('.now').on('keydown', function (event) {
-        let evt = event || window.event;
-        if ($(this).val() == '' && evt.keyCode == 8) {
-            // 如果为空且按下退回键
-            dm.pop();
-            $(this).prev('input').focus();
-            console.log(dm);
-        }
-    });
-    // $(function () {
-    //     $('#butt').click(function () {
-    //         window.location.href = 'login.html'
-    //     })
-    // }
-
     $('#butt').click(function () {
-        var merchantCode = dm.toString().split(',').join("");
-        $('#QRcode').attr({
-            src: "http://192.168.88.15:8000/qrcode?merchantCode=" + merchantCode,
-            style: {display: 'block'}
-        });
+        dm = $('.now').val();
+        if (dm.length >= 15) {
+            var merchantCode = dm.toString().split(',').join("");
+            console.log(merchantCode);
+            $.ajax({
+                type: 'GET',
+                url: "http://192.168.88.15:8000/merchants?merchantCode=" + merchantCode,
+                success: function (data) {
+                    console.log(data);
+                    if (data.status == '0000') {
+                        var merchantCode = dm.toString().split(',').join("");
+                        var name = data.payload.name;
+                        console.log(1);
+                        window.location.href = 'login.html?val=' + merchantCode + "&name=" + name;
+                    } else {
+                        console.log(2);
+                        alert('请输入正确的15位商户代码')
+                    }
+                }
+            })
+        } else {
+            alert('请输入正确的15位商户代码')
+        }
     })
 </script>
 </body>
